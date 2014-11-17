@@ -1,0 +1,5 @@
+{
+   "preencha_valores" : "Preencha os valores relacionados ao tipo de cobrança escolhido."
+  ,"percentual_maior_zero" : "Percentual deve ser maior que zero."
+  ,"valor_maior_zero"      : "Valor deve ser maior que zero."
+}

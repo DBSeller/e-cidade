@@ -1,0 +1,8 @@
+{
+  "campo_obrigatorio"    : "Campo [sCampo] é de preenchimento obrigatório.",
+  "complementar_aberto"  : "Complementar em aberto. Execute o fechamento.",
+  "mes_invalido"         : "Mês inválido!",
+  "ano_invalido"         : "Ano inválido!",
+  "rescisao"             : "Selecione alguma rescisão para continuar.",
+  "folha_salario_fechada": "A folha de salário esta aberta. Execute o fechamento."
+}

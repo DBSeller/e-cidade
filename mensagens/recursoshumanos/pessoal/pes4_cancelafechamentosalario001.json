@@ -1,0 +1,5 @@
+{ 
+  "cancelado_com_sucesso"    : "Fechamento da folha de salário cancelado com sucesso.",
+  "folha_fechada_inexistente": "Não existe folha de salário fechada.",
+  "erro_existe_suplementar"  : "Não é possível cancelar o fechamento da folha salário, pois existe folha suplementar."
+}

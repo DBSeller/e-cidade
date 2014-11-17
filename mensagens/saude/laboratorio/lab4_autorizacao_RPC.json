@@ -1,0 +1,5 @@
+{
+  "erro_autorizar_requisicao"      : "Erro ao autorizar a requisição:\n[sErro]",
+  "erro_autorizar_item_requisicao" : "Erro ao autorizar item da requisição:\n[sErro]",
+  "exames_autorizados"             : "Exame(s) autorizado(s) com sucesso!"
+}

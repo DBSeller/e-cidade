@@ -1,0 +1,5 @@
+{
+  "erro_salvar"          : "Erro ao salvar dados do exame.",
+  "erro_buscar_setor"    : "Erro ao buscar o setor vinculado ao exame:\n[sErro]",
+  "setor_nao_encontrado" : "Nenhum setor encontrado para o exame."
+}

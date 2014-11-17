@@ -1,0 +1,9 @@
+{
+  "campo_obrigatorio"           : "Campo [sCampo] é de preenchimento obrigatório.",
+  "cgm_pessoa_fisica"           : "O CGM selecionado deve ser uma pessoa física.",
+  "campo_cgm_obrigatorio"       : "O CGM não possui [sCampo] configurado no cadastro.",
+  "usuario_invalido"            : "Usuário Inválido.",
+  "campo_login_ja_existe"       : "Login já cadastrado.",
+  "situacao_usuario_invalida"   : "Situação do usuário inválida.",
+  "instituicao_nao_selecionada" : "Selecione uma ou mais instituições para o usuário"
+}

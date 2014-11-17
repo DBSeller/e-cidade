@@ -1,0 +1,3 @@
+<?
+$campos = "licencaempreendimento.am08_sequencial,licencaempreendimento.am08_empreendimento,licencaempreendimento.am08_protprocesso,licencaempreendimento.am08_licencaanterior,licencaempreendimento.am08_dataemissao,licencaempreendimento.am08_datavencimento,licencaempreendimento.am08_tipolicenca";
+?>

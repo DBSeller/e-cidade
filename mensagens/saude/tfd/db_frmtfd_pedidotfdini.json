@@ -1,0 +1,8 @@
+{
+  "informe_cgs"            : "Você deve digitar um CGS.",
+  "chave_nao_encontrada"   : "Chave não encontrada.",
+  "numero_cns_invalido"    : "Número de CNS inválido para busca.",
+  "cns_nao_encontrado"     : "CNS não encontrado.",
+  "cep_nao_encontrado"     : "CEP não encontrado.",
+  "cgs_atualizado_sucesso" : "Informações do CGS atualizadas com sucesso!"
+}
